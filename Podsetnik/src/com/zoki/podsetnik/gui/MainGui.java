@@ -13,6 +13,8 @@ import java.awt.Toolkit;
 import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.awt.event.WindowStateListener;
@@ -56,7 +58,6 @@ public class MainGui extends JFrame {
 	ArrayList<String> messages;
 	Random randomGenerator;
 	Countdown countdown;
-	private Thread refreshing_thread;
 
 	public MainGui() {
 		super("Reminder");
@@ -70,7 +71,7 @@ public class MainGui extends JFrame {
 			e.printStackTrace();
 		}
 		add_fields();
-		add_events();
+
 		if (SystemTray.isSupported()) {
 
 			tray = SystemTray.getSystemTray();
@@ -82,6 +83,7 @@ public class MainGui extends JFrame {
 		} else {
 
 		}
+		add_events();
 
 		setIconImage(image_icon);
 		setSize(400, 210);
@@ -148,9 +150,9 @@ public class MainGui extends JFrame {
 
 		setBackground(Color.white);
 		ImageIcon icon = new ImageIcon(Toolkit.getDefaultToolkit().getImage("data/smile-clock_2.png"));
-		
+
 		JLabel background = new JLabel("", icon, SwingConstants.CENTER);
-		background.setSize(icon.getIconWidth()-60, icon.getIconHeight()-90);
+		background.setSize(icon.getIconWidth() - 60, icon.getIconHeight() - 90);
 		add_b.add(background);
 		add(add_b, BorderLayout.NORTH);
 
@@ -234,31 +236,6 @@ public class MainGui extends JFrame {
 		else
 			countdown.notify_thread();
 
-		if (refreshing_thread != null) {
-			synchronized (refreshing_thread) {
-				refreshing_thread.notifyAll();
-			}
-		}
-		refreshing_thread = new Thread() {
-			public void run() {
-				try {
-
-					while (countdown.isIs_running()) {
-						sleep(1000);
-						long tim = countdown.get_time_remaining();
-						SimpleDateFormat format= new SimpleDateFormat("HH:mm:ss");
-						
-						Date d = new Date();
-						d.setTime(tim-60*60*1000);
-						String tip = "Reminder ["+format.format(d)+ "]";
-						trayIcon.setToolTip(tip);
-					}
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		};
-		refreshing_thread.start();
 	}
 
 	private void add_events() {
@@ -351,6 +328,41 @@ public class MainGui extends JFrame {
 			}
 		});
 
+		trayIcon.addMouseListener(new MouseListener() {
+
+			@Override
+			public void mouseReleased(MouseEvent arg0) {
+
+			}
+
+			@Override
+			public void mousePressed(MouseEvent arg0) {
+
+			}
+
+			@Override
+			public void mouseExited(MouseEvent arg0) {
+
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent arg0) {
+
+			}
+
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				if (arg0.getButton() == MouseEvent.BUTTON1) {
+					long tim = countdown.get_time_remaining();
+					SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
+					Date d = new Date();
+					d.setTime(tim - 60 * 60 * 1000);
+					String tip = "Reminder [" + format.format(d) + "]";
+					trayIcon.displayMessage("Time left", tip, TrayIcon.MessageType.INFO);
+				}
+
+			}
+		});
 	}
 
 	public static void main(String[] args) {
