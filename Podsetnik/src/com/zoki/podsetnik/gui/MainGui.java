@@ -58,6 +58,7 @@ public class MainGui extends JFrame {
 	ArrayList<String> messages;
 	Random randomGenerator;
 	Countdown countdown;
+	JButton ok_button;
 
 	public MainGui() {
 		super("Reminder");
@@ -96,6 +97,8 @@ public class MainGui extends JFrame {
 
 		setResizable(false);
 		setVisible(true);
+		
+		start_counter();
 	}
 
 	private void init_message_list() {
@@ -170,7 +173,7 @@ public class MainGui extends JFrame {
 		add_b.add(textArea);
 		add(add_b, BorderLayout.CENTER);
 
-		JButton ok_button = new JButton("OK");
+		ok_button = new JButton("OK");
 		ok_button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
@@ -182,6 +185,7 @@ public class MainGui extends JFrame {
 				}
 			}
 		});
+		ok_button.setEnabled(false);
 		add_b = new JPanel();
 		add_b.setBackground(Color.white);
 		add_b.add(ok_button);
@@ -365,13 +369,10 @@ public class MainGui extends JFrame {
 		});
 	}
 
-	public static void main(String[] args) {
-		new MainGui();
-	}
-
 	public void show_message() {
 		int index = randomGenerator.nextInt(messages.size());
 		try {
+			Toolkit.getDefaultToolkit().beep();
 			textArea.setText(new String(messages.get(index).getBytes(), "UTF-8"));
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
@@ -380,8 +381,32 @@ public class MainGui extends JFrame {
 		setVisible(true);
 		setExtendedState(JFrame.NORMAL);
 		tray.remove(trayIcon);
+		
+		start_counter();
 	}
 
+	private void start_counter()
+	{
+		(new Thread(){
+			public void run()
+			{
+				ok_button.setEnabled(false);
+				for(int i = 5 ; i>0;i--)
+				{
+					ok_button.setText(" "+i+" ");
+					try {
+						sleep(1000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+				ok_button.setText("OK");
+				ok_button.setEnabled(true);
+			}
+		}).start();
+		
+		
+	}
 	private JTextArea textAreaProperties(JTextArea textArea) {
 		textArea.setEditable(false);
 		textArea.setCursor(null);
@@ -395,6 +420,11 @@ public class MainGui extends JFrame {
 		textArea.setBackground(Color.white);
 		textArea.setSize(380, 70);
 		return textArea;
+	}
+
+
+	public static void main(String[] args) {
+		new MainGui();
 	}
 
 }
