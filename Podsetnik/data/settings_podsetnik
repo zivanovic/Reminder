@@ -1,2 +1,2 @@
-timeout=3730000
-play_sound=0
+timeout=10000
+play_sound=1

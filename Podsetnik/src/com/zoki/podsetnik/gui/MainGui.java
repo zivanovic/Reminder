@@ -87,7 +87,7 @@ public class MainGui extends JFrame {
 		add_events();
 
 		setIconImage(image_icon);
-		setSize(400, 210);
+		setSize(400, 190);
 
 		// set to centar of screan
 		Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
@@ -157,7 +157,7 @@ public class MainGui extends JFrame {
 		JLabel background = new JLabel("", icon, SwingConstants.CENTER);
 		background.setSize(icon.getIconWidth() - 60, icon.getIconHeight() - 90);
 		add_b.add(background);
-		add(add_b, BorderLayout.NORTH);
+		add(add_b, BorderLayout.WEST);
 
 		randomGenerator = new Random();
 		int index = randomGenerator.nextInt(messages.size());
@@ -171,7 +171,7 @@ public class MainGui extends JFrame {
 		add_b = new JPanel();
 		add_b.setBackground(Color.white);
 		add_b.add(textArea);
-		add(add_b, BorderLayout.CENTER);
+		add(add_b, BorderLayout.EAST);
 
 		ok_button = new JButton("OK");
 		ok_button.addActionListener(new ActionListener() {
@@ -372,7 +372,9 @@ public class MainGui extends JFrame {
 	public void show_message() {
 		int index = randomGenerator.nextInt(messages.size());
 		try {
-			Toolkit.getDefaultToolkit().beep();
+			if(sp.play_sound)
+				Toolkit.getDefaultToolkit().beep();
+			
 			textArea.setText(new String(messages.get(index).getBytes(), "UTF-8"));
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
@@ -418,7 +420,7 @@ public class MainGui extends JFrame {
 		textArea.setFont(font);
 		textArea.setForeground(Color.BLUE);
 		textArea.setBackground(Color.white);
-		textArea.setSize(380, 70);
+		textArea.setSize(280, 72);
 		return textArea;
 	}
 

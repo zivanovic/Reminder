@@ -109,6 +109,7 @@ public class SettngsGui extends JFrame {
 		long time = select.getTime();
 		long rep_time = reper.getTime();
 		sp.period = (time - rep_time) + 1000 * 60 * 60;
+		
 		close();
 	}
 
